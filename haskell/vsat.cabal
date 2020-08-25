@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c7c64caa53d1576738bcbe8b25d7a275c69a87d468d9efe7986094c525830da5
+-- hash: d2eabea5ccc9b029468c2696c03e9b51385592533dd7eb8d0964ec94faa48b3b
 
 name:           vsat
 version:        0.1.0.0
@@ -52,6 +52,7 @@ library
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -81,6 +82,7 @@ executable vsat
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -119,6 +121,7 @@ test-suite vsat-test
       QuickCheck
     , Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -177,6 +180,7 @@ benchmark auto
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -232,6 +236,7 @@ benchmark auto-dead-core
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -288,6 +293,7 @@ benchmark auto-diag
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -343,6 +349,7 @@ benchmark fin
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -398,6 +405,7 @@ benchmark fin-dead-core
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -454,6 +462,7 @@ benchmark fin-diag
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava
@@ -509,6 +518,7 @@ benchmark linux
   build-depends:
       Spock
     , aeson
+    , aeson-pretty
     , base >=4.7 && <5
     , bytestring
     , cassava

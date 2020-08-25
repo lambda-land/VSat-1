@@ -226,7 +226,7 @@ vPropShareIntOnly xs = sized g
 -- this has a strong likelihood of sharing
 -- | generate with $ x <- genVProp :: (IO (VProp Var Var Var))
 genVProp :: IO VarProp
-genVProp = generate arbitrary
+genVProp = generate $ arbitrary `suchThat` onlyBools
 
 genReadable :: Gen VarProp
 genReadable = arbitrary

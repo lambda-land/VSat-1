@@ -27,6 +27,7 @@ dependencies:
 - text
 - tasty-quickcheck
 - aeson
+- aeson-pretty
 - megaparsec >= 8.0.0
 - parser-combinators >= 1.2.1
 - unicode-show # just for result output
