@@ -1,34 +1,156 @@
-# DISCLAIMER
-This project is deprecated, and this repository serves only as an archive. See
-[this repo](https://github.com/lambda-land/VSat-Papers/tree/master/SPLC2020) for
-instructions on running this version of the solver. See [this
-repo](https://github.com/doyougnu/VSmt) for next iteration of variational
-satisfiability solving.
+# Introduction
+This repo is a fork of the VSAT project for the artifact submission to the
+SPLC'20 conference, accompanying the following paper:
 
-# What
-This project provides variational sat solving using the [Choice
-Calculus](http://web.engr.oregonstate.edu/~walkiner/projects/choice-calculus.html)
-built on top of the
-excellent [Data.SBV](https://hackage.haskell.org/package/sbv-7.5/docs/Data-SBV.html)
-library.
+**Variational Satisfiability Solving**
+Jeffrey Young, Eric Walkingshaw, and Thomas Thüm
+_24th ACM International Systems and Software Product Line Conference (SPLC 2020)_
 
-# Using the Heroku Server (Recommended for non-haskell users)
-If you do not feel confident installing from source and are just trying to use
-the tool then you can send your requests to a heroku server I've spun up. Be forewarned that your **first request will take longer than normal** due to the dyno being spun up from a sleep state.
-- url: `https://vsatcc.herokuapp.com/`.
-- supported solvers: Only `z3` at this time
-- available routes: see the available routes section below
+For an up to date version of the variational satisfiability solver see
+[this](https://github.com/doyougnu/VSat) repository.
 
-# Building from Source
-You'll need to install `stack` and the sat solver you want to use, the following
-are supported: [z3](https://github.com/Z3Prover/z3/wiki),
-[Yices](http://yices.csl.sri.com/), [mathsat](http://mathsat.fbk.eu/),
-[boolector](https://boolector.github.io/),
-[abc](https://people.eecs.berkeley.edu/~alanmi/abc/),
-[cvc4](http://cvc4.cs.stanford.edu/web/). Stack will take care of most of the
-installation process by installing a sandboxed `ghc` and the `cabal` build tool
-for you. Please refer to the sat solver home pages to install the one you'd like
-to use for your OS.
+# Building VSAT from Source
+
+## Dependencies
+
+-   You will need to install the following:
+    -   Haskell with GHC 8.6.x or greater
+    -   cabal, version 1.12 or greater
+    -   stack, version 2.3.x or greater
+    -   z3, version 4.8.7 or greater
+
+## Building from source without nix
+
+-   Install the dependencies listed above for your operating system, see the appendix and VSAT repositories for OS specific instructions
+-   clone the VSAT repository:
+
+    ```
+    git clone git@github.com:doyougnu/VSat.git
+    cd VSat
+    ```
+-   Navigate to the source code in the <span class="underline">haskell</span> directory and ensure that the following snippet is *commented*:
+
+    ```
+    cd haskell
+    cat stack.yaml
+    ...
+    ## uncomment the following lines to tell stack you are in a nix environment
+    # nix:
+    #   enable: true
+    #   pure: true
+    #   packages: [ z3, pkgconfig, zlib ]
+    ...
+    ```
+-   build the project using stack
+
+    ```
+    stack build
+    ```
+-   You can now run any of the analysis from the submission paper, please see the Appendix repository for specific invocations for each research question in the paper. You may also run the tool in a REPL via stack:
+
+    ```
+    stack ghci
+    ...
+    Ok, 21 modules loaded.
+    Loaded GHCi configuration from /run/user/1729/haskell-stack-ghci/a8b1e3c4/ghci-script
+
+    *Main Api CaseStudy.Auto.Auto CaseStudy.Auto.CompactEncode CaseStudy.Auto.Lang
+     CaseStudy.Auto.Parser CaseStudy.Auto.Run Config Json Opts Parser Result Run
+     SAT Server Utils VProp.Boolean VProp.Core VProp.Gen VProp.SBV VProp.Types>
+
+    *Main Api CaseStudy.Auto.Auto CaseStudy.Auto.CompactEncode CaseStudy.Auto.Lang
+     CaseStudy.Auto.Parser CaseStudy.Auto.Run Config Json Opts Parser Result Run
+     SAT Server Utils VProp.Boolean VProp.Core VProp.Gen VProp.SBV VProp.Types> :set prompt "> "
+
+    > :t sat
+    sat :: (Resultable d, SAT (ReadableProp d)) => ReadableProp d -> IO (Result d)
+
+    > :m + Data.Text
+
+    > let prop = (bRef "a" ||| (bChc "AA" (bRef "b") (bRef "c")) :: ReadableProp Text)
+
+    > sat prop
+    Result ("b":=#F
+    +--"__Sat":=("AA" and #T) or (not "AA" and #T)
+    |  +--|
+    |  +--"a":="AA" and #T
+    +--"c":=not "AA" and #T
+    ,UnSatResult (fromList []))
+
+    > sat (bRef "a" &&& (bChc "AA" (bnot $ bRef "a") (bRef "c")) :: ReadableProp Text)
+    Result ("a":=not "AA" and #T
+    +--"__Sat":=not "AA" and #T
+    +--"c":=not "AA" and #T
+    ,UnSatResult (fromList [("AA" and #T,[])]))
+    ...
+    ```
+
+## Building from source using nix
+
+If you use `nix` or `nixOS` we provide several `*.nix` files to fully recreate the development environment of the paper, including pinning `nixpkgs` to the month of submission. Please see the appendix repository for more information. We recommend using stack to perform the build on `nix` systems. Using nix itself should also work but is untested. To build on a `nix` based system perform the following:
+
+-   clone the VSAT repository:
+
+    ```
+    git clone git@github.com:doyougnu/VSat.git
+    cd VSat
+    ```
+-   navigate to the tool in the <span class="underline">haskell</span> directory and Ensure that the following snippet is *uncommented*:
+
+    ```
+    cd haskell
+    cat stack.yaml
+    ...
+    ## uncomment the following lines to tell stack you are in a nix environment
+    nix:
+      enable: true
+      pure: true
+      packages: [ z3, pkgconfig, zlib ]
+    ...
+    ```
+-   build the project using stack
+
+    ```
+    stack build
+    ```
+-   You can now run any of the analysis from the submission paper, please see the Appendix repository for specific invocations for each research question in the paper. You may also run the tool in a REPL via stack:
+
+    ```
+    stack ghci
+    ...
+    Ok, 21 modules loaded.
+    Loaded GHCi configuration from /run/user/1729/haskell-stack-ghci/a8b1e3c4/ghci-script
+
+    *Main Api CaseStudy.Auto.Auto CaseStudy.Auto.CompactEncode CaseStudy.Auto.Lang
+     CaseStudy.Auto.Parser CaseStudy.Auto.Run Config Json Opts Parser Result Run SAT
+     Server Utils VProp.Boolean VProp.Core VProp.Gen VProp.SBV VProp.Types>
+
+    *Main Api CaseStudy.Auto.Auto CaseStudy.Auto.CompactEncode CaseStudy.Auto.Lang
+     CaseStudy.Auto.Parser CaseStudy.Auto.Run Config Json Opts Parser Result Run SAT
+    Server Utils VProp.Boolean VProp.Core VProp.Gen VProp.SBV VProp.Types> :set prompt "> "
+
+    > :t sat
+    sat :: (Resultable d, SAT (ReadableProp d)) => ReadableProp d -> IO (Result d)
+
+    > :m + Data.Text
+
+    > let prop = (bRef "a" ||| (bChc "AA" (bRef "b") (bRef "c")) :: ReadableProp Text)
+
+    > sat prop
+    Result ("b":=#F
+    +--"__Sat":=("AA" and #T) or (not "AA" and #T)
+    |  +--|
+    |  +--"a":="AA" and #T
+    +--"c":=not "AA" and #T
+    ,UnSatResult (fromList []))
+
+    > sat (bRef "a" &&& (bChc "AA" (bnot $ bRef "a") (bRef "c")) :: ReadableProp Text)
+    Result ("a":=not "AA" and #T
+    +--"__Sat":=not "AA" and #T
+    +--"c":=not "AA" and #T
+    ,UnSatResult (fromList [("AA" and #T,[])]))
+    ...
+    ```
 
 ## Installing Stack
 
