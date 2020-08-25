@@ -19,7 +19,7 @@ For an up to date version of the variational satisfiability solver see
     -   stack, version 2.3.x or greater
     -   z3, version 4.8.7 or greater
 
-## Building from source without nix
+## Building from source without nix (default)
 
 -   Install the dependencies listed above for your operating system, see the appendix and VSAT repositories for OS specific instructions
 -   clone the VSAT repository:
