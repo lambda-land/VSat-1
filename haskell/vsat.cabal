@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 531f6e0f3fcc8c856e3883ac2d0ad6e51128004e9bdb1e2b135c20e2e6560614
+-- hash: c7c64caa53d1576738bcbe8b25d7a275c69a87d468d9efe7986094c525830da5
 
 name:           vsat
 version:        0.1.0.0
@@ -50,9 +50,11 @@ library
       src
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , genifunctors >=0.4
@@ -62,8 +64,10 @@ library
     , sbv >=8.6
     , tasty-quickcheck
     , text
+    , time
     , unicode-show
     , unordered-containers
+    , wai-extra
   default-language: Haskell2010
 
 executable vsat
@@ -75,9 +79,11 @@ executable vsat
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -fno-warn-orphans
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , genifunctors >=0.4
@@ -87,9 +93,11 @@ executable vsat
     , sbv >=8.6
     , tasty-quickcheck
     , text
+    , time
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 test-suite vsat-test
@@ -109,9 +117,11 @@ test-suite vsat-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       QuickCheck
+    , Spock
     , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , genifunctors >=0.4
@@ -125,9 +135,11 @@ test-suite vsat-test
     , tasty-quickcheck
     , tasty-smallcheck
     , text
+    , time
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 benchmark auto
@@ -163,9 +175,11 @@ benchmark auto
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , gauge
@@ -180,6 +194,7 @@ benchmark auto
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 benchmark auto-dead-core
@@ -215,9 +230,11 @@ benchmark auto-dead-core
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , gauge
@@ -229,9 +246,11 @@ benchmark auto-dead-core
     , sbv >=8.6
     , tasty-quickcheck
     , text
+    , time
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 benchmark auto-diag
@@ -267,9 +286,11 @@ benchmark auto-diag
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , gauge
@@ -284,6 +305,7 @@ benchmark auto-diag
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 benchmark fin
@@ -319,9 +341,11 @@ benchmark fin
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , gauge
@@ -336,6 +360,7 @@ benchmark fin
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 benchmark fin-dead-core
@@ -371,9 +396,11 @@ benchmark fin-dead-core
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , gauge
@@ -385,9 +412,11 @@ benchmark fin-dead-core
     , sbv >=8.6
     , tasty-quickcheck
     , text
+    , time
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 benchmark fin-diag
@@ -423,9 +452,11 @@ benchmark fin-diag
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , deepseq
     , gauge
@@ -440,6 +471,7 @@ benchmark fin-diag
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
 
 benchmark linux
@@ -475,9 +507,11 @@ benchmark linux
   default-extensions: NamedFieldPuns OverloadedStrings FlexibleContexts DeriveFunctor DeriveGeneric BangPatterns GeneralizedNewtypeDeriving DeriveTraversable FlexibleInstances DeriveDataTypeable MultiParamTypeClasses RecordWildCards TemplateHaskell ViewPatterns
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      Spock
+    , aeson
     , base >=4.7 && <5
     , bytestring
+    , cassava
     , containers
     , criterion
     , deepseq
@@ -488,7 +522,9 @@ benchmark linux
     , sbv >=8.6
     , tasty-quickcheck
     , text
+    , time
     , unicode-show
     , unordered-containers
     , vsat
+    , wai-extra
   default-language: Haskell2010
