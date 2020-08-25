@@ -154,7 +154,7 @@ If you use `nix` or `nixOS` we provide several `*.nix` files to fully recreate t
     ,UnSatResult (fromList [("AA" and #T,[])]))
     ...
     ```
-#### Reproducing the data
+## Reproducing the data
 All the data cited in the paper can be reproduced by running benchmarks provided
 in this project. Run a benchmark using stack + gauge,e.g., `stack bench
 vsat:auto --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv
