@@ -4,6 +4,7 @@ SPLC'20 conference, accompanying the following paper:
 
 **Variational Satisfiability Solving**
 Jeffrey Young, Eric Walkingshaw, and Thomas Thüm
+
 _24th ACM International Systems and Software Product Line Conference (SPLC 2020)_
 
 For an up to date version of the variational satisfiability solver see
