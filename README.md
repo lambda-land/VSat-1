@@ -3,11 +3,14 @@ This repo is a fork of the VSAT project for the artifact submission to the
 SPLC'20 conference, accompanying the following paper:
 
 **Variational Satisfiability Solving**
-Jeffrey Young, Eric Walkingshaw, and Thomas Thüm  
+Jeffrey Young, Eric Walkingshaw, and Thomas Thüm
 _24th ACM International Systems and Software Product Line Conference (SPLC 2020)_
 
 For an up to date version of the variational satisfiability solver see
-[this](https://github.com/doyougnu/VSat) repository.
+[this](https://github.com/doyougnu/VSat) repository. For additional details on
+performing the statistical analysis please see the
+[Appendix](https://github.com/lambda-land/VSat-Papers/tree/master/SPLC2020)
+repository
 
 # Building VSAT from Source
 
@@ -151,6 +154,51 @@ If you use `nix` or `nixOS` we provide several `*.nix` files to fully recreate t
     ,UnSatResult (fromList [("AA" and #T,[])]))
     ...
     ```
+#### Reproducing the data
+All the data cited in the paper can be reproduced by running benchmarks provided
+in this project. Run a benchmark using stack + gauge,e.g., `stack bench
+vsat:auto --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv
+output-file.csv`
+
+Add a `csvraw` argument to get the bootstrapped averages _and_ the raw
+measurements from gauge: `stack bench vsat:auto --benchmark-arguments='+RTS -qg
+-A64m -AL128m -n8m -RTS --csv output-file.csv --csvraw raw-output.csv`
+
+The available benchmarks are listed benchmark targets in `package.yaml` in the vsat Haskell project:
+  - run the automotive dataset
+    - `stack bench vsat:auto --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv output-file.csv'`
+  - run the financial dataset
+    - `stack bench vsat:fin --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv output-file.csv'`
+  - run the core/dead on auto
+    - `stack bench vsat:auto-dead-core --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv output-file.csv'`
+  - run the core/dead on fin
+    - `stack bench vsat:fin-dead-core --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv output-file.csv'`
+  - run variational model diagnostics on fin:
+    - `stack bench vsat:fin-diag --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv output-file.csv'`
+  - run variational model diagnostics on auto:
+    - `stack bench vsat:auto-diag --benchmark-arguments='+RTS -qg -A64m -AL128m -n8m -RTS --csv output-file.csv'`
+
+To retrieve the counts of sat vs unsat models you can count the disjuncted
+clauses in the resulting variational model. The numbers cited in the paper come
+from a branch which altered the benchmark source code to count the outputs of
+the solver. This branch is called `SatUnsatCounting` in the vsat project github
+cited above.
+
+We make all scripts to generate plots in the paper and perform the data analysis
+available in the `haskell/statisticsScripts` folder, in addition we provide
+`RMarkdown` files describing the statistical analysis in a step-by-step manner
+in the
+[Appendix](https://github.com/lambda-land/VSat-Papers/tree/master/SPLC2020)
+repository.
+
+#### Processing data
+We make available a julia script called `parseRaw.jl` to process the `csv` files
+from the benchmarking. You'll have to edit the input and output of it by hand.
+If you run it on data generated with `csvraw` you'll need to change `:Name` to
+`:name` or vice versa. We do not provide a `.nix` file for the julia script
+because at the time of this writing Julia has not solidified their packaging
+process enough for `nix` to reproduce it in a pure, functional way. If needed,
+the `csv`s can be parsed in `R` or your language of choice.
 
 ## Installing Stack
 
