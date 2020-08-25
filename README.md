@@ -2,7 +2,7 @@
 This repo is a fork of the VSAT project for the artifact submission to the
 SPLC'20 conference, accompanying the following paper:
 
-**Variational Satisfiability Solving**
+**Variational Satisfiability Solving**  
 Jeffrey Young, Eric Walkingshaw, and Thomas Thüm  
 _24th ACM International Systems and Software Product Line Conference (SPLC 2020)_
 
