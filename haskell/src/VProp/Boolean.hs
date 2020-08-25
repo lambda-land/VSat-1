@@ -1,7 +1,7 @@
 module VProp.Boolean where
 
 import VProp.Types
-import qualified Data.Map as M ((!), lookup, Map)
+import qualified Data.Map as M ((!), Map)
 
 import VProp.SBV
 

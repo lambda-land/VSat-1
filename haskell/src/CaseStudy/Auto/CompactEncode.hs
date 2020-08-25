@@ -45,7 +45,7 @@ compactEncode' dimMap as = S.execState (mapMmap (compact bindings) return as') a
     -- reverse the dimMap to get dims at key position
     rDimMap = M.foldrWithKey (\k v m -> M.union m (M.singleton v k)) M.empty dimMap
     -- helper function that nests conjoined choices
-    helper a@(V.OpBB V.And x@(V.ChcB d l r) y@(V.ChcB _ l' _)) v
+    helper a@(V.OpBB V.And x@(V.ChcB _ l _) y@(V.ChcB _ l' _)) v
       | isHole l && isHole l' = M.singleton x v <> M.singleton y v
       | otherwise = M.singleton a v
     helper x v = M.singleton x v
@@ -71,7 +71,7 @@ compact bs@(rDimMap, _) (V.ChcB d _ _) =
         when (isJust d') $
           do
             let d'Chc = (V.ChcB (fromJust d') hole V.true)
-            st <- S.get
+            _ <- S.get
             toAdd <- S.gets (M.lookup d'Chc)
             addToFalse d toAdd
             remove d'Chc

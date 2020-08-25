@@ -5,7 +5,7 @@ import           Data.SBV.Control
 import           Control.Arrow (first)
 import           Control.Monad (foldM)
 import           Data.Text (Text,pack)
-import qualified Data.List as L (partition, sort, groupBy, lookup,filter)
+import qualified Data.List as L (partition, sort, groupBy, lookup)
 import           Data.Map
 import           Data.SBV.Internals (SolverContext)
 import           Data.Bitraversable (bitraverse)
@@ -205,7 +205,7 @@ runIncrementalSolve_  assocList = runSMT $
 
          -- run the points in time that need to not accumulate on the assertion
          -- stack
-         foldM (\acc (v, prop) ->
+         _ <- foldM (\acc (v, prop) ->
               do
                trace ("solving: " ++ show v ++ "\n") $ return ()
                push 1
@@ -258,6 +258,7 @@ autoToResProp = ResultProp . UniformProp . helper
           = OpIB (idispatch op) (Ref RefI a) (LitI $ I (fromInteger i))
         helper (BBinary op l r) = OpBB (rdispatch' op) (helper l) (helper r)
         helper (AutoRef a) = RefB a
+        helper _ = undefined
 
 splitCtx :: AutoLang a b -> (AutoLang a b, AutoLang a b)
 splitCtx a = (leftMost a, removeCtxs a)

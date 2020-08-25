@@ -20,12 +20,11 @@ import System.Timeout
 import Data.Time.Clock
 
 import Api
-import Json
+import Json()
 import Opts
 import Config
 import VProp.Types
 import VProp.Core
-import SAT
 
 -- * Api is the type for the spock server. I leave each config parameter as Unit
 -- * because I do not need a backend only a server daemon
@@ -134,6 +133,6 @@ timeProc !a = do
   start <- getCPUTime
   v <- a
   end' <- timeout 300000000 (v `seq` getCPUTime)
-  let end = maybe (300 * 10^12) id end'
-      diff = (fromIntegral (end - start)) / (10 ^ 12)
+  let end = maybe (300 * 10^(12 :: Integer)) id end'
+      diff = (fromIntegral (end - start)) / (10 ^ (12 :: Integer))
   return (diff,  v)

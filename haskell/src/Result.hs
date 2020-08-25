@@ -33,6 +33,7 @@ module Result ( ResultProp(..)
               , numUnChanged
               , size
               , getSignificantClauses
+              , hasUnsatResult
               ) where
 
 import           Control.DeepSeq (NFData)
@@ -52,7 +53,7 @@ import           VProp.SBV()
 import           VProp.Boolean
 import           VProp.Core (dimToVar, countOrs)
 import           VProp.Types             (BB_B (..), B_B (..), Config,
-                                          VProp (..), Var, Dim(..), ReadableProp)
+                                          VProp (..), Var, Dim(..))
 
 -- | A custom type whose only purpose is to define a monoid instance over VProp
 -- with logical or as the concat operation and false as unit. We constrain all

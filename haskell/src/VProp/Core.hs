@@ -2,7 +2,7 @@ module VProp.Core where
 
 import           Data.List     (group, sort, nub)
 import qualified Data.Map      as Map
-import           Data.Monoid   ((<>), Sum(..))
+import           Data.Monoid   (Sum(..))
 import           Data.SBV      (literal)
 import qualified Data.Set      as Set
 import           Data.Text     (unpack)
@@ -159,10 +159,10 @@ selectVariantTotal' _  x             = x
 -- that choice is guarded by a parent choice whose dimension is not in the
 -- configuration
 selectVariant :: Ord d => Config d -> VProp d a b -> VProp d a b
-selectVariant tbs x@(ChcB t y n) = case Map.lookup t tbs of
-                                     Nothing    -> ChcB t (selectVariant tbs y) (selectVariant tbs n)
-                                     Just True  -> selectVariant tbs y
-                                     Just False -> selectVariant tbs n
+selectVariant tbs (ChcB t y n) = case Map.lookup t tbs of
+                                   Nothing    -> ChcB t (selectVariant tbs y) (selectVariant tbs n)
+                                   Just True  -> selectVariant tbs y
+                                   Just False -> selectVariant tbs n
 selectVariant tb (OpB op x)    = OpB op $ selectVariant tb x
 selectVariant tb (OpBB a l r)  = OpBB a (selectVariant tb l) (selectVariant tb r)
 selectVariant tb (OpIB op l r) = OpIB op (selectVariant' tb l) (selectVariant' tb r)
@@ -303,7 +303,7 @@ numTerms = getSum . trifoldMap f f f
 
 compressionRatio :: (Ord d, Fractional c) => VProp d a b -> c
 compressionRatio prop
-  | fromIntegral total == 0 = 0
+  | fromIntegral total == (0 :: Integer) = 0
   | otherwise = ((fromIntegral numerator) / (fromIntegral total))
   where numerator = length $ toList prop
         configs = choices prop
@@ -433,6 +433,6 @@ atMost1 xs = cs &&& fromList (&&&) disjuncs
                                         , i < j
                                         ]
 
-        labeled = zip xs [1..]
+        labeled = zip xs ([1..] :: [Integer])
         cs = fromList (|||) xs
 {-# INLINE atMost1 #-}

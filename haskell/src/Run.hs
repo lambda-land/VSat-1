@@ -20,15 +20,13 @@ module Run ( SatDict
 import           Control.Arrow (first, second)
 import           Control.Monad.RWS.Strict
 import           Control.Monad.State.Strict as St
-import Control.Monad.IO.Class (MonadIO)
 import           Data.Foldable (foldr')
-import           Data.HashSet (HashSet, member, insert)
+import           Data.HashSet (HashSet)
 import qualified Data.Map.Strict as M
 import qualified Data.SBV as S
 import qualified Data.SBV.Control as SC
 import qualified Data.SBV.Internals as I
-import           Data.Text (unpack, pack, Text)
-import           Data.List (intersperse)
+import           Data.Text (unpack, Text)
 import           Prelude hiding (LT, GT, EQ)
 
 import           SAT
@@ -40,7 +38,7 @@ import           Config
 import           Result
 
 -- import           Text.Show.Unicode          (ushow)
-import Debug.Trace
+-- import Debug.Trace
 
 -- | The satisfiable dictionary, this is actually the "state" keys are configs
 -- (an mapping from dimensions to booleans denoting selection) and values are
@@ -95,8 +93,11 @@ runVonP :: (Resultable d, SAT (ReadableProp d)) =>
            IO (Result d)
 runVonP pool os p = fst' <$> runEnv (runVOnPlain pool) os p
 
--- runPonV :: (Show d, Resultable d) => ConfigPool d -> ReadableProp d
---         -> IO (Result d, SatDict d, Log)
+runPonV :: Resultable d =>
+           ConfigPool d
+        -> SMTConf d Text Text
+        -> ReadableProp d
+        -> IO (Result d, SatDict d, Log)
 runPonV pool conf prop = runEnv (runPlainOnVSat pool) conf prop
 
 -- | Run the VSMT solver given a list of optimizations and a prop
@@ -268,7 +269,7 @@ type ConfigPool a = [Config a]
 
 type Used = HashSet Text
 
-type UsedConstraint = Text
+-- type UsedConstraint = Text
 
 -- | the internal state for the incremental solve algorithm, it holds a result
 -- list, and the used dims map, and is parameterized by the types of dimensions,
@@ -315,17 +316,17 @@ replaceConfig = onConfig . const
 onProcessed :: (GenModel -> GenModel) -> IncState d -> IncState d
 onProcessed f IncState {..} = IncState {processed=f processed, ..}
 
-onUsed :: (Used -> Used) -> IncState d -> IncState d
-onUsed f IncState {..} = IncState {usedConstraints =f usedConstraints, ..}
+-- onUsed :: (Used -> Used) -> IncState d -> IncState d
+-- onUsed f IncState {..} = IncState {usedConstraints =f usedConstraints, ..}
 
 onGenModels :: (Bool -> Bool) -> IncState d -> IncState d
 onGenModels f IncState {..} = IncState {genModelMaps =f genModelMaps, ..}
 
-isUsed :: UsedConstraint -> Used -> Bool
-isUsed = member
+-- isUsed :: UsedConstraint -> Used -> Bool
+-- isUsed = member
 
-insertUsed :: UsedConstraint -> IncState d -> IncState d
-insertUsed = onUsed . insert
+-- insertUsed :: UsedConstraint -> IncState d -> IncState d
+-- insertUsed = onUsed . insert
 
 -- | the incremental solve monad, with the base monad being the query monad so
 -- we can pull out sbv models Hardcoding so that I don't have to write the mtl
@@ -380,7 +381,7 @@ solveVariational cs prop = do mapM_ step cs; return true
 type Name = Text
 
 -- | The name of a constraint is a list of reference names and operators
-type ConstraintName = [Name]
+-- type ConstraintName = [Name]
 
 -- | This ensures two things: 1st we need all variables to be symbolic before
 -- starting query mode. 2nd we cannot allow any duplicates to be called on a
@@ -475,27 +476,27 @@ setModelGenD = St.modify' $! onProcessed (const True)
 setModelNotGenD :: IncVSMTSolve d ()
 setModelNotGenD = St.modify' $! onProcessed (const False)
 
-setUsed :: UsedConstraint -> IncVSMTSolve d ()
-setUsed = St.modify' . insertUsed
+-- setUsed :: UsedConstraint -> IncVSMTSolve d ()
+-- setUsed = St.modify' . insertUsed
 
--- | A smart constrain method, this inspects a set of constraint names to see if
--- we have a duplicate constraint name. If we do (if the name representing the
--- sbool is in the set) then we simply constrain the bool unnamed, if not then
--- we add the named constraint and insert into the set. We use an unordered
--- hashset for performance reasons because these strings can get quite long
--- leading to poor Eq performance
-constrain :: S.SBool -> ConstraintName -> IncVSMTSolve d ()
-constrain b [] = S.constrain b
-constrain b !name = do
-  used <- gets usedConstraints
-  if not (isUsed usedName used)
-    then do S.namedConstraint name' b; setUsed usedName
-    else S.constrain b
-  where !name' = (unpack $ mconcat (intersperse " " name))
-        !usedName = mconcat name
+-- -- | A smart constrain method, this inspects a set of constraint names to see if
+-- -- we have a duplicate constraint name. If we do (if the name representing the
+-- -- sbool is in the set) then we simply constrain the bool unnamed, if not then
+-- -- we add the named constraint and insert into the set. We use an unordered
+-- -- hashset for performance reasons because these strings can get quite long
+-- -- leading to poor Eq performance
+-- constrain :: S.SBool -> ConstraintName -> IncVSMTSolve d ()
+-- constrain b [] = S.constrain b
+-- constrain b !name = do
+--   used <- gets usedConstraints
+--   if not (isUsed usedName used)
+--     then do S.namedConstraint name' b; setUsed usedName
+--     else S.constrain b
+--   where !name' = (unpack $ mconcat (intersperse " " name))
+--         !usedName = mconcat name
 
-toText :: Show a => a -> Text
-toText = pack . show
+-- toText :: Show a => a -> Text
+-- toText = pack . show
 
 solveVariant :: Resultable d =>
   IncVSMTSolve d I.SBool -> IncVSMTSolve d (Result d)
@@ -616,11 +617,11 @@ vCoreMetrics p = S.runSMT $
 -- value level we evaluate the choices properly by manipulating the assertion
 -- stack, resulting in model generation and sbools
 toBValue :: Resultable d => VProp d (S.SBool, Name) SNum -> BValue d
-toBValue (RefB (b,name)) = B b
+toBValue (RefB (b,_)) = B b
 toBValue (LitB b) = B (S.literal b)
 toBValue (OpB Not (OpB Not notchc)) = toBValue notchc
 toBValue (OpB Not e) = driveNotDown e
-toBValue (OpBB op (RefB (b,n)) (RefB (b',n'))) = (B bres)
+toBValue (OpBB op (RefB (b,_)) (RefB (b',_))) = (B bres)
   where bres = (bDispatch op) b b'
 toBValue (OpBB op (ChcB d l r) r') = BVOp (C d l r) op (toBValue r')
 toBValue (OpBB op l' (ChcB d l r)) = BVOp (toBValue l') op (C d l r)
@@ -628,8 +629,8 @@ toBValue (OpBB op l r) = BVOp (toBValue l) op (toBValue r)
 toBValue (OpIB _ _ _) = error "Blame Jeff! This isn't implemented yet!"
 toBValue (ChcB d l r) = C d l r
 
-dbg :: (Show a, Monad m) => String -> a -> m ()
-dbg s a = trace (s ++ " : " ++ show a ++ " \n") $ return ()
+-- dbg :: (Show a, Monad m) => String -> a -> m ()
+-- dbg s a = trace (s ++ " : " ++ show a ++ " \n") $ return ()
 
 -- | Evaluation allows communication with the solver and reduces terms to Unit
 -- values thereby representing that evaluation has taken place. Evaluation can
@@ -775,7 +776,7 @@ doChoice (b@(B b'), Top)                =
 doChoice (Unit, Top)               =
   -- trace ("Unit Top \n") $
   return true
-doChoice x@(C d l r, Top)            =
+doChoice (C d l r, Top)            =
   -- trace ("Choice Top"  ++ show x ++ "\n") $
   do let
       bl = toBValue l
@@ -787,10 +788,10 @@ doChoice x@(C d l r, Top)            =
      handleChc goLeft goRight d >>= store
      return true
 
-doChoice (Unit, c@(InL parent op r))   =
+doChoice (Unit, (InL parent _ r))   =
   -- trace ("Unit L " ++ show c ++ "\n") $
   doChoice (r, parent)
-doChoice (Unit, c@(InR acc op parent)) =
+doChoice (Unit, (InR acc _ parent)) =
   -- trace ("Unit R " ++ show c ++ "\n") $
   doChoice (B acc, parent)
 
@@ -809,7 +810,7 @@ doChoice (B bl, InL parent op r) =
   doChoice (r, InR bl op parent)
 
   -- when we find a choice we solve it recursively
-doChoice x@(C d l r, ctx@(InL _ _ _)) =
+doChoice (C d l r, ctx@(InL _ _ _)) =
   -- trace ("Got here L " ++ show x ++ "\n") $
   do let
       goLeft = do
@@ -823,7 +824,7 @@ doChoice x@(C d l r, ctx@(InL _ _ _)) =
      handleChc goLeft goRight d >>= store
      return true
 
-doChoice x@(C d l r, ctx@(InR _ _ _)) =
+doChoice (C d l r, ctx@(InR _ _ _)) =
   -- trace ("Got here R" ++ show x ++ "\n") $
   do let
       bl = toBValue l
@@ -846,15 +847,15 @@ mkTop = mkCtx Top
 mkCtx :: Ctx d -> BValue d -> Loc d
 mkCtx = flip (,)
 
-getFocus :: S.SBool -> Ctx d -> Loc d
-getFocus b Top                     = (B b, Top)
-getFocus b (InL parent op rbranch) = (rbranch, InR b op parent)
-getFocus b (InR acc op Top)        = (B $! bDispatch op acc b, Top)
-getFocus b (InR acc op (InL parent op' rbranch)) = (rbranch, InR res op' parent)
-  where !res = bDispatch op acc b
-getFocus b (InR acc op (InR acc' op' parent)) = (B res', parent)
-  where !res = bDispatch op acc b
-        !res' = bDispatch op' acc' res
+-- getFocus :: S.SBool -> Ctx d -> Loc d
+-- getFocus b Top                     = (B b, Top)
+-- getFocus b (InL parent op rbranch) = (rbranch, InR b op parent)
+-- getFocus b (InR acc op Top)        = (B $! bDispatch op acc b, Top)
+-- getFocus b (InR acc op (InL parent op' rbranch)) = (rbranch, InR res op' parent)
+--   where !res = bDispatch op acc b
+-- getFocus b (InR acc op (InR acc' op' parent)) = (B res', parent)
+--   where !res = bDispatch op acc b
+--         !res' = bDispatch op' acc' res
 
 -- | Given a Loc find the first choice by crawling down the left hand of the zipper
 findPrincipleChoice :: Loc d -> Loc d

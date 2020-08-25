@@ -33,7 +33,6 @@ import           Config             (defConf, ReadableSMTConf)
 import           Result
 import           Run
 import           SAT
-import           Utils              (fst')
 
 -- | a newtype wrapper to denote that this proposition can only have dimensions
 -- as variables

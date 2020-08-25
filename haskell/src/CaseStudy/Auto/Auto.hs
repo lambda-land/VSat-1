@@ -283,6 +283,7 @@ vPropToAuto (V.ChcB d l r) = (BBinary And
                               (RBinary LSTE
                                 (ACtx (AVar (V.dimName d)))
                                 (ALit 0)) (vPropToAuto r)))
+vPropToAuto (V.OpIB _ _ _) = error "choices in smt constraints not supported"
 
 rdispatch :: V.BB_B -> BOp
 rdispatch V.And    = And

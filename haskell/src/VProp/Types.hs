@@ -27,6 +27,7 @@ module VProp.Types ( Var(..)
                    , bimap
                    , bifoldr
                    , bitraverse
+                   , toReadable
                    , iRef
                    , iLit
                    , dRef
@@ -47,7 +48,6 @@ import           Data.Data             (Data, Typeable)
 import           Data.Text             (pack, Text)
 import           Data.Fixed            (mod')
 import           Data.Map              (Map)
-import           Data.Monoid           ((<>))
 import qualified Data.SBV              as S
 import           Data.String           (IsString)
 import           GHC.Generics          (Generic)

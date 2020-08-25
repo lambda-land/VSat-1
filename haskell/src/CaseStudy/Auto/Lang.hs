@@ -1,16 +1,13 @@
 module CaseStudy.Auto.Lang where
 
 import           Utils (fromList)
-import           Data.List (delete)
 import           Data.SBV (EqSymbolic(..), literal)
 import           Data.Bifunctor
 import           Data.Bifoldable
 import           Data.Bitraversable
-import           Data.Monoid ((<>))
 import           GHC.Generics
 import           Control.DeepSeq (NFData)
 
-import Debug.Trace
 import qualified VProp.Types as V
 import SAT (Boolean(..))
 
@@ -94,7 +91,7 @@ atMost1 xs = cs &&& fromList (&&&) disjuncs
                                         , i < j
                                         ]
 
-        labeled = zip xs [1..]
+        labeled = zip xs ([1..] :: [Integer])
         cs = fromList (|||) xs
 
 instance Boolean (AutoLang a b) where
