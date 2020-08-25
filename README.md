@@ -247,7 +247,7 @@ git clone <this-repo> ~/path/you/want/to/build/in && cd /path/you/want/to/build/
 stack build # this will build the exectuable, go get some coffee, trust me
 ```
 
-## Running the VSMT solver
+## Running the VSAT solver
 ### Starting the local server
 To run the local server you need to build the project and then execute the
 binary that results from the build, like so:
